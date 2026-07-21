@@ -1,0 +1,16 @@
+{% for button in buttons %}
+  {% if button.style == 'regular' %}
+  {% set bClass = 'btn-primary' %}
+  {% elif button.style == 'outline' %}
+  {% set bClass = 'btn-outline' %}
+  {% endif %}
+  <a
+    href="{{ (button.link | shopUrl) if button.link else '#' }}"
+    target="{{ 'blank' if button.new_tab }}"
+    class="{{ bClass }}">
+    {{ button.text | renderString }}
+    {% if button.icon %}
+    <i class="{{ button.icon }} fa-fw"></i>
+    {% endif %}
+  </a>
+{% endfor %}

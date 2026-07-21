@@ -1,0 +1,48 @@
+<section id="{{ componentId }}" class="component" data-component-id="{{ componentId }}">
+  <div class="py-6 lg:py-8">
+    {% if properties.title %}
+      <div class="flex items-center justify-center mb-6 md:mb-8 lg:mb-10">
+        <div class="inline-block">
+          <h2 class="text-t-primary text-2xl text-center font-bold md:text-3xl lg:text-4xl tracking-tight lux-heading">
+            {{ properties.title | renderString }}
+          </h2>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="grid grid-cols-2 gap-4 lg:gap-6 lg:grid-cols-4">
+      <div class="lux-card text-center p-6 lg:p-8 group">
+        <div class="mb-2 text-3xl font-bold uppercase md:text-4xl lg:text-5xl bg-gradient-to-br from-lux-blue to-lux-purple bg-clip-text text-transparent transition-transform duration-300 group-hover:scale-110">
+          {{ helpers.numbers.formatCompact(shop.products_sold) }}
+        </div>
+        <div class="text-xs font-medium uppercase tracking-wider text-t-primary/60 md:text-sm">
+          Products Sold
+        </div>
+      </div>
+      <div class="lux-card text-center p-6 lg:p-8 group">
+        <div class="mb-2 text-3xl font-bold uppercase md:text-4xl lg:text-5xl bg-gradient-to-br from-lux-blue to-lux-purple bg-clip-text text-transparent transition-transform duration-300 group-hover:scale-110">
+          {{ helpers.numbers.formatCompact(shop.total_customers) }}
+        </div>
+        <div class="text-xs font-medium uppercase tracking-wider text-t-primary/60 md:text-sm">
+          Total Customers
+        </div>
+      </div>
+      <div class="lux-card text-center p-6 lg:p-8 group">
+        <div class="mb-2 text-3xl font-bold uppercase md:text-4xl lg:text-5xl bg-gradient-to-br from-lux-blue to-lux-purple bg-clip-text text-transparent transition-transform duration-300 group-hover:scale-110">
+          {{ helpers.numbers.formatCompact(shop.total_feedbacks) }}
+        </div>
+        <div class="text-xs font-medium uppercase tracking-wider text-t-primary/60 md:text-sm">
+          Reviews Received
+        </div>
+      </div>
+      <div class="lux-card text-center p-6 lg:p-8 group">
+        <div class="mb-2 text-3xl font-bold uppercase md:text-4xl lg:text-5xl bg-gradient-to-br from-lux-blue to-lux-purple bg-clip-text text-transparent transition-transform duration-300 group-hover:scale-110">
+          {{ helpers.numbers.formatDecimal(shop.average_rating) }}
+        </div>
+        <div class="text-xs font-medium uppercase tracking-wider text-t-primary/60 md:text-sm">
+          Average Rating
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

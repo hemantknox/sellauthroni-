@@ -1,0 +1,45 @@
+{% set data = [] %}
+{% if products %}
+  {% set data = products %}
+{% elif latest_products %}
+  {% set data = latest_products %}
+{% endif %}
+
+<section id="{{ componentId }}" class="component" data-component-id="{{ componentId }}">
+  <div class="py-6 lg:py-8">
+    {% if properties.title %}
+      <div class="flex items-center justify-center mb-6 md:mb-8 lg:mb-10">
+        <div class="inline-block">
+          <h2 class="text-t-primary text-2xl text-center font-bold md:text-3xl lg:text-4xl tracking-tight lux-heading">
+            {{ properties.title | renderString }}
+          </h2>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if properties.show_searchbar %}
+      <div class="mb-6 lg:mb-8">
+        {% render_snippet "searchbar.njk", alignment='center' %}
+      </div>
+    {% endif %}
+
+    {% if data|length > 0 %}
+      <div class="flex flex-wrap gap-4 w-full {{ 'justify-center' if properties.centered }}">
+        {% for item in data %}
+          {% if item.type == 'group' or not item.group_id %}
+            <div class="w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)] 2xl:w-[calc((100%-3rem)/4)]">
+              {% render_snippet "product-card.njk", product=item %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-12">
+        <i class="fa fa-box-open text-5xl text-t-primary/20 mb-4"></i>
+        <p class="text-t-primary/50 text-base">
+          No products available.
+        </p>
+      </div>
+    {% endif %}
+  </div>
+</section>

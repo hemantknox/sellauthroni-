@@ -1,0 +1,319 @@
+<section id="{{ componentId }}" class="component" data-component-id="{{ componentId }}">
+  <div class="py-6 lg:py-8">
+    <div class="grid gap-6 lg:grid-cols-[3fr_2fr] lg:gap-8">
+      <div>
+        <div class="lux-card overflow-hidden">
+          <div class="px-5 py-4 border-b border-white/[0.06]">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h1 class="flex-1 text-t-primary text-lg font-bold truncate md:text-xl lg:text-2xl tracking-tight">
+                {{ product.name }}
+              </h1>
+              {% if product.status_color or product.status_text %}
+                <div class="flex items-center gap-3 status md:gap-3.5" data-color="{{ product.status_color }}" data-label="{{ product.status_text }}">
+                  <div class="relative size-4 rounded-full md:size-5" style="background-color: {{ product.status_color }}">
+                    <div class="pulsating" style="background-color: {{ product.status_color }}"></div>
+                  </div>
+                  <span class="text-sm font-bold md:text-base" style="color: {{ product.status_color }}">
+                    {{ product.status_text }}
+                  </span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          {% if product.image_urls|length > 0 or product.image_url %}
+          <div class="p-3">
+            {% if product.image_urls|length > 0 %}
+            <div class="splide main">
+              <div class="splide__track aspect-product-page-image">
+                <ul class="splide__list">
+                  {% for image in product.image_urls %}
+                  <li class="splide__slide">
+                    <img src="{{ image }}" class="size-full object-product-image rounded-lux-md" style="{{ 'display: none;' if loop.index > 1 }}" />
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            {% elif product.image_url %}
+            <img src="{{ product.image_url }}" class="size-full object-product-image rounded-lux-md" />
+            {% endif %}
+          </div>
+          {% endif %}
+          <div x-data="{ activeTab: 'description' }">
+            <div class="px-5 py-4 border-t border-white/[0.06]">
+              {% if product.product_tabs|length > 0 %}
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                  <button type="button" @click="activeTab = 'description'" class="px-4 py-2 whitespace-nowrap text-sm font-medium rounded-lux-sm border transition-all duration-200" :class="`${activeTab != 'description' ? 'text-t-primary/70 bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06]' : 'bg-gradient-to-r from-lux-blue/15 to-lux-purple/15 text-lux-blue-light border-lux-blue/20'}`">
+                    Description
+                  </button>
+                  {% for productTab in product.product_tabs %}
+                    <button type="button" @click="activeTab = '{{ productTab.slug }}'" class="px-4 py-2 whitespace-nowrap text-sm font-medium rounded-lux-sm border transition-all duration-200" :class="`${activeTab != '{{ productTab.slug }}' ? 'text-t-primary/70 bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06]' : 'bg-gradient-to-r from-lux-blue/15 to-lux-purple/15 text-lux-blue-light border-lux-blue/20'}`">
+                      {{ productTab.title }}
+                    </button>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              <div>
+                <template x-if="activeTab == 'description'">
+                  <div class="text-t-primary editor leading-relaxed">
+                    {{ product.description | safe }}
+                  </div>
+                </template>
+                {% for productTab in product.product_tabs %}
+                  <template x-if="activeTab == '{{ productTab.slug }}'">
+                    <div class="text-t-primary editor leading-relaxed">
+                      {{ productTab.content | safe }}
+                    </div>
+                  </template>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div x-data="productForm" class="lg:sticky lg:top-8">
+          <div class="lux-card overflow-hidden">
+            <div class="px-5 py-4 border-b border-white/[0.06]">
+              <div class="flex justify-between items-center">
+                <div class="flex items-end gap-2">
+                  <div class="text-3xl font-bold text-t-primary tracking-tight">
+                    <span x-text="appCurrency.format(totalPrice, '{{ product.currency }}')"></span>
+                  </div>
+                  <div class="text-sm text-t-primary/60 mb-1">
+                    <span x-text="appCurrency.format(unitPrice, '{{ product.currency }}')"></span> each
+                  </div>
+                </div>
+                <div>
+                  {% if product.visibility == 'on_hold' %}
+                    <span class="text-t-primary/70 text-sm font-medium">
+                      Product On Hold
+                    </span>
+                  {% else %}
+                    <div x-show="activeVariant in product.variants">
+                      <span x-show="product.variants[activeVariant].stock > 0 || product.variants[activeVariant].stock === -1" class="text-t-primary">
+                        <span x-show="product.variants[activeVariant].stock === -1" class="inline-flex items-center gap-1.5 text-lux-success text-sm font-medium">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="currentColor" viewBox="0 0 256 256"><path d="M248,128a56,56,0,0,1-95.6,39.6l-.33-.35L92.12,99.55a40,40,0,1,0,0,56.9l8.52-9.62a8,8,0,1,1,12,10.61l-8.69,9.81-.33.35a56,56,0,1,1,0-79.2l.33.35,59.95,67.7a40,40,0,1,0,0-56.9l-8.52,9.62a8,8,0,1,1-12-10.61l8.69-9.81.33-.35A56,56,0,0,1,248,128Z"></path></svg>
+                          In Stock
+                        </span>
+                        <span x-show="product.variants[activeVariant].stock > 0 && !product.hide_stock_count" class="text-lux-success text-sm font-medium" x-text="product.variants[activeVariant].stock + ' In Stock'"></span>
+                        <span x-show="product.variants[activeVariant].stock > 0 && product.hide_stock_count" class="text-lux-success text-sm font-medium">In Stock</span>
+                      </span>
+                      <span x-show="product.variants[activeVariant].stock === 0" x-cloak class="text-lux-error text-sm font-medium">
+                        Out of Stock
+                      </span>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            {% if product.category_id or product.product_badges.page|length > 0 %}
+              <div class="px-5 py-4 border-b border-white/[0.06]">
+                <div class="badges flex items-center gap-2 flex-wrap">
+                  {% if product.category_id %}
+                    <a href="{{ product.category.url }}" class="lux-badge">
+                      <i class="fa fa-border-all fa-fw"></i>
+                      {{ product.category.name }}
+                    </a>
+                  {% endif %}
+
+                  {% for productBadge in product.product_badges.page %}
+                    <div class="lux-badge" style="background-color: {{ productBadge.color }}" data-text="{{ productBadge.label }}" data-color="{{ productBadge.color }}">
+                      {% if productBadge.icon %}
+                        <i class="{{ productBadge.icon }} fa-fw"></i>
+                      {% endif %}
+                      {{ productBadge.label }}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+            
+            {% render_snippet "product-form.njk", product=product %}
+
+            {% if 'sales' in liveStats or 'views' in liveStats %}
+              <div class="flex flex-col gap-3 sm:gap-1 px-5 py-4 border-t border-white/[0.06] text-sm text-t-primary/50">
+                {% if 'views' in liveStats %}
+                  <div class="flex items-center gap-4 sm:gap-2">
+                    <i class="fa fa-fw fa-eye text-lux-blue-light text-base sm:text-sm"></i>
+                    <p>
+                      <span class="font-semibold text-t-primary/70">{{ liveStats.views }}</span>
+                      {{ 'person is' if liveStats.views == 1 else 'people are' }} currently viewing this product.
+                    </p>
+                  </div>
+                {% endif %}
+                {% if 'sales' in liveStats %}
+                  {% set salesCountHoursLabelMap = {
+                    '1': 'hour',
+                    '6': '6 hours',
+                    '12': '12 hours',
+                    '24': '24 hours',
+                    '168': '7 days',
+                    '720': '30 days'
+                  } %}
+                  <div class="flex items-center gap-4 sm:gap-2">
+                    <i class="fa fa-fw fa-shopping-cart text-lux-blue-light text-base sm:text-sm"></i>
+                    <p>
+                      <span class="font-semibold text-t-primary/70">{{ liveStats.sales }}</span>
+                      {{ 'person has' if liveStats.sales == 1 else 'people have' }} purchased this product{{ '.' if not product.sales_count_hours in salesCountHoursLabelMap else (' in the last ' ~ salesCountHoursLabelMap[product.sales_count_hours] ~ '.') }}
+                    </p>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% if productUpsells.length > 0 %}
+      <div class="mt-8 lg:mt-12">
+        <h2 class="text-xl font-bold text-t-primary mb-6 tracking-tight md:text-2xl">
+          Commonly Bought Together
+        </h2>
+        <div class="flex flex-wrap gap-4">
+          {% set ogProduct = product %}
+          {% for upsell in productUpsells %}
+            <div class="w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)] 2xl:w-[calc((100%-3rem)/4)]">
+              {% render_snippet "product-card.njk", product=upsell %}
+            </div>
+          {% endfor %}
+          {% set product = ogProduct %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% if 'latestOrders' in liveStats and liveStats.latestOrders|length > 0 %}
+  <link href="https://cdn.jsdelivr.net/npm/flag-icons@7.3.2/css/flag-icons.min.css" rel="stylesheet" integrity="sha256-tyPeBlnZW2qWbAF1hQiCt9qo6SOgOSymvJBum+FrrwI=" crossorigin="anonymous">
+  <div
+    x-data="salesNotifications"
+    x-cloak
+    class="relative"
+  >
+    <div 
+      x-show="show"
+      x-transition:enter="transition-transform ease-in-out duration-500"
+      x-transition:enter-start="transform translate-y-full"
+      x-transition:enter-end="transform translate-y-0"
+      x-transition:leave="transition-transform ease-in duration-500"
+      x-transition:leave-start="transform translate-y-0"
+      x-transition:leave-end="transform translate-y-full"
+      class="fixed z-50 bottom-4 left-4 right-4 sm:right-auto"
+    >
+      <template x-if="order">
+        <div class="flex items-center gap-3 p-1 glass rounded-lux-lg shadow-lux-lg group">
+          {% if product.image_urls|length > 0 %}
+            <div class="relative">
+              <img src="{{ product.image_urls[0] }}" alt="{{ product.name }} image" class="size-[3.75rem] object-cover rounded-lux-sm sm:size-[4.5rem]">
+            </div>
+          {% endif %}
+          <div class="truncate pr-2">
+            <p class="text-xs text-t-primary/75 font-light truncate sm:text-sm">
+              Someone
+              <template x-if="order.country_code">
+                <span>
+                  from <i :class="`size-[0.625rem] sm:size-3 fi fi-${order.country_code.toLowerCase()}`"></i>
+                </span>
+              </template>
+              purchased
+            </p>
+            <p class="text-sm text-t-primary font-medium truncate sm:text-base">
+              {{ product.name }}
+            </p>
+            <p class="text-xs text-t-primary/75 font-light truncate sm:text-sm">
+              <span x-text="getTimeAgo(order.completed_at)"></span>
+            </p>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('salesNotifications', () => ({
+        displayTime: 8000,
+        initTimeMin: 2000,
+        initTimeMax: 4000,
+        nextTimeMin: 8000,
+        nextTimeMax: 12000,
+
+        latestOrders: {{ liveStats.latestOrders | json }},
+        show: false,
+
+        get order() {
+          return this.latestOrders.length > 0 ? this.latestOrders[0] : null;
+        },
+
+        getRandomInterval(min, max) {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+
+        getTimeAgo(input) {
+          const date = (input instanceof Date) ? input : new Date(input);
+          const formatter = new Intl.RelativeTimeFormat('en');
+          const ranges = {
+            years: 3600 * 24 * 365,
+            months: 3600 * 24 * 30,
+            weeks: 3600 * 24 * 7,
+            days: 3600 * 24,
+            hours: 3600,
+            minutes: 60,
+            seconds: 1
+          };
+          const secondsElapsed = (date.getTime() - Date.now()) / 1000;
+          for (let key in ranges) {
+            if (ranges[key] < Math.abs(secondsElapsed)) {
+              const delta = secondsElapsed / ranges[key];
+              return formatter.format(Math.round(delta), key);
+            }
+          }
+
+          return 'just now';
+        },
+
+        showNotification() {
+          if (this.latestOrders.length === 0) return;
+
+          this.show = true;
+          setTimeout(() => {
+            this.show = false;
+
+            setTimeout(() => {
+              this.latestOrders.shift();
+
+              if (this.latestOrders.length > 0) {
+                setTimeout(() => this.showNotification(), this.getRandomInterval(this.nextTimeMin, this.nextTimeMax));
+              }
+            }, 500);
+          }, this.displayTime);
+        },
+
+        init() {
+          setTimeout(() => this.showNotification(), this.getRandomInterval(this.initTimeMin, this.initTimeMax));
+        }
+      }));
+    });
+  </script>
+{% endif %}
+
+<script>
+  window.addEventListener('load', () => {
+    const arrows = {{ 'true' if product.image_urls|length > 1 else 'false' }};
+
+    window.splideMain = new Splide('.splide.main', {
+      type: 'slide',
+      pagination: false,
+      autoHeight: true,
+      arrows
+    });
+
+    window.splideMain.mount();
+
+    document.querySelectorAll('.splide__slide img').forEach((img) => {
+      img.style.removeProperty('display');
+    });
+  });
+</script>

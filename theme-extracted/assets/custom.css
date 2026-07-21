@@ -1,0 +1,531 @@
+/*
+ * Premium Luxury Digital Marketplace — Custom Design System
+ * This file will not be overwritten by theme updates.
+ *
+ * Design philosophy:
+ *  - Black background with subtle blue/purple gradient meshes
+ *  - Glassmorphism (frosted glass) surfaces
+ *  - Blue (#3b82f6) + Purple (#8b5cf6) dual-accent system
+ *  - 60 FPS GPU-accelerated animations
+ *  - Mobile-first responsive
+ *  - 8px spacing system
+ *  - 3 font weights max (400, 600, 700)
+ *  - 150% body / 120% heading line-height
+*/
+
+/* ============================================
+   DESIGN TOKENS
+   ============================================ */
+:root {
+  /* Primary accent — blue */
+  --lux-blue: 59, 130, 246;          /* #3b82f6 */
+  --lux-blue-light: 96, 165, 250;    /* #60a5fa */
+  --lux-blue-dark: 37, 99, 235;     /* #2563eb */
+
+  /* Secondary accent — purple */
+  --lux-purple: 139, 92, 246;       /* #8b5cf6 */
+  --lux-purple-light: 167, 139, 250;/* #a78bfa */
+  --lux-purple-dark: 124, 58, 237;  /* #7c3aed */
+
+  /* Semantic colors */
+  --lux-success: 34, 197, 94;       /* #22c55e */
+  --lux-warning: 245, 158, 11;      /* #f59e0b */
+  --lux-error: 239, 68, 68;         /* #ef5f5f */
+
+  /* Neutral ramp */
+  --lux-n-950: 6, 6, 12;            /* #06060c — base background */
+  --lux-n-900: 11, 11, 17;          /* #0b0b11 — card */
+  --lux-n-850: 17, 17, 27;          /* #11111b */
+  --lux-n-800: 24, 24, 38;          /* #181826 */
+  --lux-n-700: 40, 40, 60;          /* #28283c */
+  --lux-n-600: 64, 64, 88;           /* #404058 */
+  --lux-n-500: 100, 100, 120;       /* #646478 */
+  --lux-n-400: 150, 150, 170;       /* #9696aa */
+  --lux-n-300: 200, 200, 215;       /* #c8c8d7 */
+
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg-hover: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.15);
+  --glass-blur: 20px;
+
+  /* Gradient accents */
+  --grad-accent: linear-gradient(135deg, rgb(var(--lux-blue)) 0%, rgb(var(--lux-purple)) 100%);
+  --grad-accent-soft: linear-gradient(135deg, rgba(var(--lux-blue), 0.15) 0%, rgba(var(--lux-purple), 0.15) 100%);
+  --grad-glow: radial-gradient(circle at 50% 0%, rgba(var(--lux-blue), 0.12) 0%, transparent 60%);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 40px rgba(var(--lux-blue), 0.15);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Transitions — GPU-friendly */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 150ms;
+  --dur-med: 300ms;
+  --dur-slow: 500ms;
+}
+
+/* ============================================
+   BASE OVERRIDES
+   ============================================ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: rgb(var(--lux-n-950)) !important;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(var(--lux-blue), 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(var(--lux-purple), 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(var(--lux-blue), 0.04) 0%, transparent 50%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Subtle noise texture overlay for premium feel */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' /%3E%3C/svg%3E");
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(var(--lux-n-950));
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--lux-n-700));
+  border-radius: 5px;
+  border: 2px solid rgb(var(--lux-n-950));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--lux-n-600));
+}
+
+/* ============================================
+   GLASSMORPHISM UTILITY CLASSES
+   ============================================ */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.glass-hover {
+  transition: all var(--dur-med) var(--ease-out);
+}
+.glass-hover:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   GRADIENT TEXT UTILITY
+   ============================================ */
+.text-gradient {
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ============================================
+   BUTTONS — Premium
+   ============================================ */
+.btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  color: #fff;
+  background: var(--grad-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--dur-fast) var(--ease-out);
+  box-shadow: 0 4px 16px rgba(var(--lux-blue), 0.3);
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgb(var(--lux-blue-light)) 0%, rgb(var(--lux-purple-light)) 100%);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.btn-primary:hover::before {
+  opacity: 1;
+}
+.btn-primary > * {
+  position: relative;
+  z-index: 1;
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 24px rgba(var(--lux-blue), 0.4);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.btn-outline {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  color: rgb(var(--lux-blue-light));
+  background: transparent;
+  border: 1px solid rgba(var(--lux-blue), 0.4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.btn-outline:hover {
+  background: rgba(var(--lux-blue), 0.1);
+  border-color: rgba(var(--lux-blue), 0.6);
+  box-shadow: 0 0 20px rgba(var(--lux-blue), 0.15);
+}
+
+/* ============================================
+   CARDS — Glassmorphism product cards
+   ============================================ */
+.lux-card {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--dur-med) var(--ease-out);
+}
+.lux-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  padding: 1px;
+  background: var(--grad-accent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--dur-med) var(--ease-out);
+  pointer-events: none;
+}
+.lux-card:hover {
+  background: var(--glass-bg-hover);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  transform: translateY(-4px);
+}
+.lux-card:hover::after {
+  opacity: 1;
+}
+
+/* ============================================
+   SECTION HEADINGS — with gradient underline
+   ============================================ */
+.lux-heading {
+  position: relative;
+  display: inline-block;
+}
+.lux-heading::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  margin-top: 0.5rem;
+  background: var(--grad-accent);
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+/* ============================================
+   FORM INPUTS — Premium
+   ============================================ */
+.lux-input {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  color: rgb(var(--lux-n-300));
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  transition: all var(--dur-fast) var(--ease-out);
+  outline: none;
+}
+.lux-input::placeholder {
+  color: rgb(var(--lux-n-500));
+}
+.lux-input:focus {
+  border-color: rgba(var(--lux-blue), 0.5);
+  background: rgba(var(--lux-blue), 0.05);
+  box-shadow: 0 0 0 3px rgba(var(--lux-blue), 0.1);
+}
+
+/* ============================================
+   ANIMATIONS — 60 FPS GPU-accelerated
+   ============================================ */
+@keyframes lux-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lux-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes lux-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes lux-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes lux-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes lux-glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(var(--lux-blue), 0.15); }
+  50% { box-shadow: 0 0 40px rgba(var(--lux-purple), 0.25); }
+}
+
+@keyframes lux-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-fade-up {
+  animation: lux-fade-up var(--dur-slow) var(--ease-out) both;
+}
+.animate-fade-in {
+  animation: lux-fade-in var(--dur-slow) var(--ease-out) both;
+}
+.animate-scale-in {
+  animation: lux-scale-in var(--dur-med) var(--ease-spring) both;
+}
+.animate-float {
+  animation: lux-float 4s ease-in-out infinite;
+}
+.animate-glow {
+  animation: lux-glow-pulse 3s ease-in-out infinite;
+}
+
+/* Shimmer skeleton loader */
+.lux-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.02) 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  background-size: 200% 100%;
+  animation: lux-shimmer 1.5s infinite;
+}
+
+/* ============================================
+   SCROLL REVEAL — Intersection Observer
+   ============================================ */
+.lux-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  will-change: opacity, transform;
+}
+.lux-reveal.lux-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   BADGE — gradient pill
+   ============================================ */
+.lux-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--grad-accent);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ============================================
+   DIVIDER — gradient
+   ============================================ */
+.lux-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--lux-blue), 0.3), rgba(var(--lux-purple), 0.3), transparent);
+  border: none;
+}
+
+/* ============================================
+   MODAL BACKDROP — enhanced
+   ============================================ */
+.lux-modal-backdrop {
+  background: rgba(6, 6, 12, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ============================================
+   NAVBAR — sticky glass
+   ============================================ */
+.lux-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(6, 6, 12, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--dur-med) var(--ease-out);
+}
+.lux-navbar.scrolled {
+  background: rgba(6, 6, 12, 0.85);
+  box-shadow: var(--shadow-md);
+}
+
+/* ============================================
+   LINK — animated underline
+   ============================================ */
+.lux-link {
+  position: relative;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.lux-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--grad-accent);
+  transition: width var(--dur-fast) var(--ease-out);
+}
+.lux-link:hover::after {
+  width: 100%;
+}
+
+/* ============================================
+   STAR RATING — glow
+   ============================================ */
+.lux-stars svg {
+  filter: drop-shadow(0 0 4px rgba(var(--lux-purple), 0.4));
+}
+
+/* ============================================
+   RESPONSIVE — mobile-first tweaks
+   ============================================ */
+@media (max-width: 640px) {
+  :root {
+    --glass-blur: 12px;
+  }
+  .lux-card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* ============================================
+   REDUCED MOTION — accessibility
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .lux-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================
+   FOCUS VISIBLE — accessibility
+   ============================================ */
+:focus-visible {
+  outline: 2px solid rgba(var(--lux-blue), 0.6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================
+   SELECTION
+   ============================================ */
+::selection {
+  background: rgba(var(--lux-blue), 0.3);
+  color: #fff;
+}

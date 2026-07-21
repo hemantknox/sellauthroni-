@@ -1,0 +1,37 @@
+<section id="{{ componentId }}" class="component" data-component-id="{{ componentId }}">
+  <div class="py-6 lg:py-8">
+    {% if properties.title %}
+      <div class="flex items-center justify-center mb-6 md:mb-8 lg:mb-10">
+        <div class="inline-block">
+          <h2 class="text-t-primary text-2xl text-center font-bold md:text-3xl lg:text-4xl tracking-tight lux-heading">
+            {{ properties.title | renderString }}
+          </h2>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="{{ containerClass }}">
+      <div class="flex flex-col gap-4">
+        {% for item in properties.items %}
+          <div class="lux-card text-t-primary relative p-5 md:p-6 group" x-data="{ isOpen: false }">
+            <button class="w-full flex justify-between items-center gap-4" @click="isOpen = !isOpen">
+              <h4 class="text-left text-base font-semibold md:text-lg">
+                {{ item.question | renderString }}
+              </h4>
+              <span class="flex-shrink-0 inline-flex items-center justify-center size-8 rounded-lg bg-gradient-to-br from-lux-blue/15 to-lux-purple/15 border border-lux-blue/20 transition-all duration-300 group-hover:border-lux-blue/40">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4 text-lux-blue-light transition-transform duration-300 ease-out" :class="{ 'rotate-180': isOpen }">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </span>
+            </button>
+            <div x-ref="content" :style="isOpen ? `max-height: ${$refs.content.scrollHeight}px` : ''" class="overflow-hidden transition-all ease-out duration-300 max-h-0">
+              <p class="pt-4 text-sm text-t-primary/70 md:text-base leading-relaxed">
+                <span class="whitespace-pre-line">{{ item.answer | renderString }}</span>
+              </p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>

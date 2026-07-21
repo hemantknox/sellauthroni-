@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    {% render_snippet "meta-tags.njk" %}
+    
+    <link href="{{ 'built.css' | assetUrl }}" rel="stylesheet"/>
+    <link href="{{ 'custom.css' | assetUrl }}" rel="stylesheet"/>
+
+    <style id="theme-styles">
+      :root {
+        --cl-accent: {{ global.properties.accent_color | hex_to_rgb }};
+        --cl-background: {{ global.properties.background_color | hex_to_rgb }};
+        --cl-card: {{ global.properties.card_color | hex_to_rgb }};
+        --cl-t-primary: {{ (global.properties.text_primary_color if global.properties.text_primary_color else '#ffffff') | hex_to_rgb }};
+        --cl-t-accent: {{ (global.properties.text_accent_color if global.properties.text_accent_color else '#ffffff') | hex_to_rgb }};
+        --cl-snow: {{ (global.properties.snow_color if global.properties.snow_color else '#ffffff') | hex_to_rgb }};
+
+        --product-card-image-aspect-ratio: {{ (global.properties.product_card_image_aspect_ratio if global.properties.product_card_image_aspect_ratio else '16/9') }};
+        --product-page-image-aspect-ratio: {{ (global.properties.product_page_image_aspect_ratio if global.properties.product_page_image_aspect_ratio else '16/9') }};
+        --group-card-image-aspect-ratio: {{ (global.properties.group_card_image_aspect_ratio if global.properties.group_card_image_aspect_ratio else '16/9') }};
+        --blog-card-image-aspect-ratio: {{ (global.properties.blog_card_image_aspect_ratio if global.properties.blog_card_image_aspect_ratio else '16/9') }};
+        --product-image-fit: {{ (global.properties.product_image_fit if global.properties.product_image_fit else 'cover') }};
+        --group-image-fit: {{ (global.properties.group_image_fit if global.properties.group_image_fit else 'cover') }};
+      }
+
+      body {
+        font-family: '{{ (global.properties.font if global.properties.font else 'Play') }}', sans-serif;
+      }
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family={{ (global.properties.font if global.properties.font else 'Play') | replace(" ", "+") }}:wght@300;400;500;600;700&display=swap" rel="stylesheet" id="theme-font">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="{{ 'splide@4.1.4.min.css' | staticAsset }}" rel="stylesheet" />
+    <link href="{{ 'choices@10.2.0.min.css' | staticAsset }}" rel="stylesheet" />
+    <link href="{{ 'lite-yt-embed@0.3.4.min.css' | staticAsset }}" rel="stylesheet" />
+  </head>
+  <body class="text-t-primary" style="background-color: rgb({{ global.properties.background_color | hex_to_rgb }});">
+    {% if shop.background_image_url %}
+      <div class="fixed inset-0 z-[-1] bg-center bg-cover pointer-events-none" style="background-image: url({{ shop.background_image_url }});"></div>
+    {% endif %}
+
+    <div id="particles-js" class="fixed inset-0 z-0 size-full"></div>
+    
+    <div id="app" x-data="app">
+      {% if templateName != 'maintenance' %}
+        {% render_component "announcement" %}
+      {% endif %}
+
+      <div class="flex flex-col justify-between max-w-[85rem] min-h-screen mx-auto p-4 relative md:p-6 lg:p-8">
+        <div>
+          {% if templateName != 'maintenance' %}
+            {% render_component "navbar" %}
+          {% endif %}
+
+          {{ templateContent | safe }}
+        </div>
+
+        {% if templateName != 'maintenance' %}
+          {% render_component "footer" %}
+          {% render_snippet "customer-login-modal.njk" %}
+        {% endif %}
+      </div>
+    </div>
+
+    <script>
+      window.shopId = {{ shop.id | json }};
+      window.apiBaseUrl = {{ '' | apiInternalUrl | json }};
+      window.currencyRatesUsd = {{ currency_rates_usd | json }};
+      window.currencySymbols = {{ currency_symbols | json }};
+      window.defaultCurrency = {{ currency | json }};
+      window.shopCustomer = {{ shop_customer | json }};
+    </script>
+
+    {% if isBuilder %}
+      {% render_snippet "script-builder.njk" %}
+    {% endif %}
+
+    {% if altcha or altcha_shop_customer %}
+      <script src="{{ 'altcha@1.5.1.min.js' | staticAsset }}" type="module"></script>
+    {% elif shop.recaptcha_key %}
+      <script src="https://www.google.com/recaptcha/api.js?render={{ shop.recaptcha_key }}"></script>
+    {% endif %}
+
+    <script src="{{ 'js.cookie@3.0.8.min.js' | staticAsset }}"></script>
+    <script src="{{ 'splide@4.1.4.min.js' | staticAsset }}"></script>
+    <script src="{{ 'choices@10.2.0.min.js' | staticAsset }}"></script>
+    <script src="{{ 'lite-yt-embed@0.3.4.min.js' | staticAsset }}"></script>
+    <script
+      src="{{ 'script.js' | assetUrl }}"
+      crossorigin="anonymous"
+    ></script>
+    <script src="{{ 'alpinejs@3.15.12.min.js' | staticAsset }}"></script>
+    <script src="{{ 'particles@2.2.3.min.js' | staticAsset }}"></script>
+    <script>
+      particlesJS({
+        "particles": {
+          "number": {
+            "value": 50,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "{{ global.properties.accent_color }}"
+          },
+          "opacity": {
+            "value": 0.5,
+            "random": false,
+            "anim": {
+              "enable": false,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+              "enable": false,
+              "speed": 40,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "{{ global.properties.accent_color }}",
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 1,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+              "enable": false,
+              "rotateX": 600,
+              "rotateY": 1200
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": false,
+              "mode": "repulse"
+            },
+            "onclick": {
+              "enable": false,
+              "mode": "push"
+            },
+            "resize": true  
+          }
+        },
+        "retina_detect": true
+      });
+    </script>
+
+    {% if global.properties.snow %}
+      <div id="snow"></div>
+      <script>snow({ count: 200 });</script>
+    {% endif %}
+
+    {% render_snippet "script-integrations.njk" %}
+  </body>
+</html>

@@ -1,0 +1,31 @@
+<section id="{{ componentId }}" class="component" data-component-id="{{ componentId }}">
+  <div class="py-6 lg:py-8">
+    {% if properties.title %}
+      <div class="flex items-center justify-center mb-6 md:mb-8 lg:mb-10">
+        <div class="inline-block">
+          <h2 class="text-t-primary text-2xl text-center font-bold md:text-3xl lg:text-4xl tracking-tight lux-heading">
+            {{ properties.title | renderString }}
+          </h2>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="flex flex-wrap gap-4 w-full {{ 'justify-center' if properties.centered }}">
+      {% for feature in properties.features %}
+        <div class="w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)] 2xl:w-[calc((100%-3rem)/4)]">
+          <div class="lux-card text-center p-6 lg:p-8 group h-full">
+            <div class="mb-4 inline-flex items-center justify-center size-14 rounded-lux-md bg-gradient-to-br from-lux-blue/15 to-lux-purple/15 border border-lux-blue/20 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lux-glow">
+              <i class="text-xl md:text-2xl lg:text-3xl {{ feature.icon }} bg-gradient-to-br from-lux-blue-light to-lux-purple-light bg-clip-text text-transparent"></i>
+            </div>
+            <h4 class="mb-2 text-base text-t-primary font-semibold uppercase tracking-wide md:text-lg">
+              {{ feature.title | renderString }}
+            </h4>
+            <p class="text-sm font-normal text-t-primary/60 leading-relaxed">
+              <span class="whitespace-pre-line">{{ feature.description | renderString }}</span>
+            </p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,55 @@
+<div class="glass rounded-lux-lg overflow-hidden">
+  <div class="p-4 md:p-6 lg:p-8 border-b border-white/[0.06]">
+    <h3 class="text-xl font-bold text-t-primary tracking-tight">
+      Customer Dashboard
+    </h3>
+    <p class="text-t-primary/60 mt-2 text-sm">
+      Logged in as {{ shop_customer.email }}
+    </p>
+  </div>
+  <ul class="flex flex-col gap-1 p-4 md:p-6 lg:p-8">
+    <li>
+      <a href="{{ '/customer/dashboard' | shopUrl }}" class="block px-3 py-2.5 rounded-lux-sm transition-all duration-200 {{ 'bg-lux-blue/10 text-lux-blue-light font-medium' if templateName == 'customer-dashboard' else 'text-t-primary/70 hover:text-t-primary hover:bg-white/[0.04]' }}">
+        Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="{{ '/customer/invoices' | shopUrl }}" class="block px-3 py-2.5 rounded-lux-sm transition-all duration-200 {{ 'bg-lux-blue/10 text-lux-blue-light font-medium' if templateName == 'customer-invoices' else 'text-t-primary/70 hover:text-t-primary hover:bg-white/[0.04]' }}">
+        Orders
+      </a>
+    </li>
+    {% if shop.tickets_enabled %}
+      <li>
+        <a href="{{ '/customer/tickets' | shopUrl }}" class="block px-3 py-2.5 rounded-lux-sm transition-all duration-200 {{ 'bg-lux-blue/10 text-lux-blue-light font-medium' if templateName == 'customer-tickets' or templateName == 'customer-ticket' else 'text-t-primary/70 hover:text-t-primary hover:bg-white/[0.04]' }}">
+          Tickets
+        </a>
+      </li>
+    {% endif %}
+    {% if shop.customer_balance_enabled %}
+      <li>
+        <a href="{{ '/customer/balance' | shopUrl }}" class="flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-lux-sm transition-all duration-200 {{ 'bg-lux-blue/10 text-lux-blue-light font-medium' if templateName == 'customer-balance' else 'text-t-primary/70 hover:text-t-primary hover:bg-white/[0.04]' }}">
+          <span>
+            Balance
+          </span>
+          <span class="text-sm font-semibold">
+            <span x-text="appCurrency.format({{ shop_customer.balance }}, 'USD')">
+              {{ formatPrice(shop_customer.balance, 'USD') }}
+            </span>
+          </span>
+        </a>
+      </li>
+    {% endif %}
+    {% if shop.affiliate_enabled %}
+      <li>
+        <a href="{{ '/customer/affiliate' | shopUrl }}" class="block px-3 py-2.5 rounded-lux-sm transition-all duration-200 {{ 'bg-lux-blue/10 text-lux-blue-light font-medium' if templateName == 'customer-affiliate' else 'text-t-primary/70 hover:text-t-primary hover:bg-white/[0.04]' }}">
+          Affiliate
+        </a>
+      </li>
+    {% endif %}
+    <li class="mt-2 pt-2 border-t border-white/[0.06]">
+      <button type="button" @click="appCustomer.logout()" class="w-full text-left px-3 py-2.5 rounded-lux-sm text-t-primary/70 hover:text-lux-error hover:bg-lux-error/10 transition-all duration-200">
+        Logout
+      </button>
+    </li>
+  </ul>
+</div>
